@@ -2,15 +2,19 @@ var gulp = require('gulp');
 var webpackStream = require('webpack-stream');
 var config = require('./webpack.config.js');
 var useref = require('gulp-useref');
+var del = require('del');
+var gulpConfig = require('./gulp-config');
 
 var assets = useref({searchPath: ['./', './bower_components']});
-//assets = useref();
 
-gulp.task('build', function() {
-	 gulp.src('./src/client/**/*.js')
+
+gulp.task('build', ['clean-assets', 'assets', 'build-app'], function() {
+});
+
+gulp.task('build-app', function() {
+	 gulp.src(gulpConfig.sourceJs)
 		.pipe(webpackStream(config))
-		.pipe(assets)
-		.pipe(gulp.dest('./build'));	
+		.pipe(gulp.dest(gulpConfig.assets + 'scripts'));	
 });
 
 gulp.task('assets', function() {
@@ -20,6 +24,19 @@ gulp.task('assets', function() {
 		.pipe(gulp.dest('./build'));
 });
 
+gulp.task('clean-assets', function(done) {
+	clean(gulpConfig.assets + '**/*', done)
+});
+
 gulp.task('default', ['build'], function() {
 	console.log('A Gulp task...');
 });
+
+
+function clean(path, done) {
+    del(path).then(function() {
+       done(); 
+    });
+}
+
+
