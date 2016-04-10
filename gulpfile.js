@@ -8,7 +8,7 @@ var gulpConfig = require('./gulp-config');
 var assets = useref({searchPath: ['./', './bower_components']});
 
 
-gulp.task('build', ['clean-assets', 'assets', 'build-app'], function() {
+gulp.task('build', ['assets', 'build-app'], function() {
 });
 
 gulp.task('build-app', function() {
@@ -17,19 +17,18 @@ gulp.task('build-app', function() {
 		.pipe(gulp.dest(gulpConfig.assets + 'scripts'));	
 });
 
-gulp.task('assets', function() {
+gulp.task('assets', ['clean-assets'], function() {
 	return gulp
-		.src('./src/client/*.html')
+		.src(gulpConfig.index)
 		.pipe(assets)
 		.pipe(gulp.dest('./build'));
 });
 
 gulp.task('clean-assets', function(done) {
-	clean(gulpConfig.assets + '**/*', done)
+	return clean(gulpConfig.assets + '**/*', done)
 });
 
 gulp.task('default', ['build'], function() {
-	console.log('A Gulp task...');
 });
 
 
